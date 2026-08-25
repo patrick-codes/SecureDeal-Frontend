@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import logoImage from "../../images/logo.png";
+import appStoreImage from "../../images/App-Store.jpg";
+import playStoreImage from "../../images/Play-Store.png";
 
 export default function Footer() {
   return (
@@ -40,6 +42,32 @@ export default function Footer() {
               Escrow protection for modern transactions, built to keep every
               deal fair, secure, and transparent.
             </p>
+
+            <div className="mt-5 flex flex-row items-center gap-3">
+              <a
+                href="#"
+                className="block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md"
+                aria-label="Download on the App Store"
+              >
+                <img
+                  src={appStoreImage}
+                  alt="App Store"
+                  className="h-11 w-auto object-cover"
+                />
+              </a>
+
+              <a
+                href="#"
+                className="block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md"
+                aria-label="Get it on Google Play"
+              >
+                <img
+                  src={playStoreImage}
+                  alt="Google Play"
+                  className="h-11 w-auto object-cover"
+                />
+              </a>
+            </div>
           </div>
 
           <div>
