@@ -1,0 +1,114 @@
+import {
+  Lock,
+  ShieldCheck,
+  CreditCard,
+  FileText,
+  Users,
+  Eye,
+} from "lucide-react";
+import PublicLayout from "../../components/layout/PublicLayout";
+import Card from "../../components/ui/Card";
+
+const sections = [
+  {
+    title: "Payment Security",
+    detail:
+      "Payment is protected during the transaction and held in an escrow wallet until completion.",
+    icon: Lock,
+  },
+  {
+    title: "Transaction Protection",
+    detail:
+      "Buyer and seller protection allows each side to complete the deal with clear trust safeguards.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Dispute Resolution",
+    detail:
+      "Disputes are reviewed by SafeTra with clear evidence and neutral decision-making.",
+    icon: CreditCard,
+  },
+  {
+    title: "Identity Verification",
+    detail:
+      "Users may be verified depending on transaction requirements and risk profile.",
+    icon: Users,
+  },
+  {
+    title: "Audit Trail",
+    detail:
+      "Important transaction events are recorded to support accountability and transparency.",
+    icon: FileText,
+  },
+  {
+    title: "Privacy",
+    detail:
+      "User information is handled responsibly and only used for the transaction and support process.",
+    icon: Eye,
+  },
+];
+
+export default function SecurityPage() {
+  return (
+    <PublicLayout>
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mb-12 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+            Security
+          </p>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-textPrimary">
+            Your trust is our product.
+          </h1>
+        </div>
+
+        <div className="mb-10 rounded-[28px] border border-border bg-white p-5 shadow-card lg:p-8">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+            <div className="rounded-[24px] bg-primary p-6 text-white">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
+                <ShieldCheck className="h-7 w-7" />
+              </div>
+              <h3 className="text-2xl font-bold">Secure by default</h3>
+              <p className="mt-3 text-white/80">
+                From payment protection to dispute review, every stage is
+                designed to reduce risk and improve confidence.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                ["Protected funds", "GH₵ 8.4M"],
+                ["Escrow transactions", "2,341"],
+                ["Resolved disputes", "94%"],
+                ["Verification rate", "97%"],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-2xl border border-border bg-softGreen/50 p-4"
+                >
+                  <div className="text-sm text-textSecondary">{label}</div>
+                  <div className="mt-2 text-2xl font-bold text-textPrimary">
+                    {value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {sections.map(({ title, detail, icon: Icon }) => (
+            <Card key={title} className="p-6">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-softGreen text-primary">
+                <Icon className="h-6 w-6" />
+              </div>
+              <h3 className="mb-3 text-xl font-semibold text-textPrimary">
+                {title}
+              </h3>
+              <p className="text-textSecondary">{detail}</p>
+            </Card>
+          ))}
+        </div>
+      </section>
+    </PublicLayout>
+  );
+}
