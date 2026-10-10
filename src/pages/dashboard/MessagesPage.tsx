@@ -56,7 +56,7 @@ export default function MessagesPage() {
       ]);
       setInput("");
       setIsSending(false);
-      setToast("Message sent to the transaction chat.");
+      setToast("Message added to this local demo chat. Nothing was sent to another user.");
     }, 500);
   };
 
@@ -64,8 +64,9 @@ export default function MessagesPage() {
     <DashboardLayout>
       <div className="mx-auto max-w-5xl space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-textPrimary">MacBook Pro</h1>
-          <p className="mt-2 text-textSecondary">Transaction #SD-82931</p>
+          <h1 className="text-3xl font-bold text-textPrimary">Sample transaction chat</h1>
+          <p className="mt-2 text-textSecondary">Transaction ST-83921 · local demo only</p>
+          <p className="mt-2 rounded-xl bg-warning/10 p-3 text-sm text-textSecondary">Messages and attachments remain in this page preview. No chat service, file upload, or notification is connected.</p>
         </div>
 
         <Card className="overflow-hidden">
@@ -75,7 +76,7 @@ export default function MessagesPage() {
                 Transaction conversation
               </div>
               <div className="text-sm text-textSecondary">
-                Protected and monitored
+                Example conversation
               </div>
             </div>
           </div>
@@ -106,9 +107,10 @@ export default function MessagesPage() {
               ref={fileInputRef}
               type="file"
               className="hidden"
-              onChange={() =>
-                setToast("Attachment selected and ready to send.")
-              }
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) setToast(`${file.name} selected for preview only; it was not uploaded.`);
+              }}
             />
             <div className="flex items-center gap-3 rounded-2xl border border-border bg-slate-50 p-3">
               <button
@@ -117,9 +119,11 @@ export default function MessagesPage() {
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Paperclip className="h-4 w-4" />
+                <span className="sr-only">Select a local attachment preview</span>
               </button>
               <input
                 className="flex-1 border-none bg-transparent text-sm outline-none"
+                aria-label="Message (local demo only)"
                 placeholder="Write a message..."
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
@@ -135,6 +139,7 @@ export default function MessagesPage() {
                 className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white disabled:opacity-60"
                 onClick={sendMessage}
                 disabled={isSending || !input.trim()}
+                aria-label={isSending ? "Adding message" : "Add message to local demo"}
               >
                 {isSending ? (
                   <LoaderCircle className="h-4 w-4 animate-spin" />

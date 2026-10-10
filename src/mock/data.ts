@@ -8,17 +8,17 @@ export const trustIndicators = [
 ]
 
 export const faqItems: FaqItem[] = [
-  { question: 'What is SafeTra?', answer: 'SafeTra is a trust-first escrow platform that protects both buyers and sellers by holding funds until the agreed delivery is complete.' },
-  { question: 'How does escrow work?', answer: 'The buyer pays into a protected wallet managed by SafeTra. The seller delivers the item and the buyer confirms. Only then are funds released.' },
-  { question: 'When does the seller receive money?', answer: 'The seller receives the money only after the buyer confirms successful delivery or the dispute is resolved in their favour.' },
-  { question: 'What happens if the item isn’t delivered?', answer: 'The buyer can open a dispute and SafeTra reviews the transaction, documents, and delivery status before deciding on a resolution.' },
+  { question: 'What is SafeTra?', answer: 'SafeTra is designed to help buyers and sellers agree on transaction terms, follow payment and delivery milestones, and use a structured dispute workflow. This frontend is a mock prototype and does not process transactions.' },
+  { question: 'How does escrow work?', answer: 'The intended production workflow records payment verification, escrow state, delivery and settlement separately. The backend and payment provider are authoritative; this prototype does not hold funds.' },
+  { question: 'When does the seller receive money?', answer: 'Buyer confirmation can trigger a settlement workflow according to platform rules. A completed trade does not itself prove a payout succeeded; settlement status is tracked separately.' },
+  { question: 'What happens if the item isn’t delivered?', answer: 'Eligible users can open a dispute. Normal release actions are interrupted while the case follows its review workflow. A refund is not automatic or guaranteed.' },
   { question: 'What happens if the item is different from what was agreed?', answer: 'This is a common dispute scenario. The affected party can submit evidence and SafeTra will mediate a fair outcome.' },
-  { question: 'Can I cancel a transaction?', answer: 'Yes, if the transaction has not been secured or if both parties agree. Once funds are protected, cancellation requires review.' },
-  { question: 'How long does a transaction take?', answer: 'Most transactions move quickly, but the inspection period can range from 12 to 72 hours depending on the chosen review window.' },
+  { question: 'Can I cancel a transaction?', answer: 'Cancellation availability depends on the current transaction state and backend rules. The prototype only exposes transitions defined by the backend state machine.' },
+  { question: 'How long does a transaction take?', answer: 'The buyer and seller can agree an inspection period. The backend default is 24 hours and supports a configurable period up to 720 hours.' },
   { question: 'How are disputes handled?', answer: 'Disputes are reviewed by SafeTra support teams, with evidence and transaction history used to make a neutral decision.' },
-  { question: 'What are the fees?', answer: 'Fees vary by transaction size and plan. Typical examples are 0.5% buyer / 0.5% seller for basic transactions.' },
-  { question: 'Do I need an account?', answer: 'A buyer can review a deal and pay securely without a full account, but an account helps manage tracking and dispute communication.' },
-  { question: 'Is SafeTra available in Ghana?', answer: 'Yes. SafeTra is designed for Ghanaian transactions and supports country-relevant payment rails and local business patterns.' },
+  { question: 'What are the fees?', answer: 'The backend defaults are 0.5% for the buyer and 0.5% for the seller. Fees are configured server-side and may vary by deployment; prototype fee figures are examples only.' },
+  { question: 'Do I need an account?', answer: 'The current backend transaction and payment routes require authentication. Invitation access and any guest flow must be confirmed with product owners before integration.' },
+  { question: 'Is SafeTra available in Ghana?', answer: 'The backend uses GHS amounts and validates Ghana Mobile Money payout details. This prototype uses mock data only.' },
   { question: 'How do I become a verified seller?', answer: 'Verified sellers complete identity checks, profile verification, and transaction history review before eligibility is granted.' },
 ]
 

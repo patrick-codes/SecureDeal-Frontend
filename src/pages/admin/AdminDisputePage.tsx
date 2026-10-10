@@ -1,197 +1,45 @@
-import {
-  CheckCircle2,
-  LoaderCircle,
-  MessageSquareText,
-  Scale,
-} from "lucide-react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { CheckCircle2, Scale } from "lucide-react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
-import Toast from "../../components/ui/Toast";
+import { getDemoSession, getMockDisputes, getMockTransaction, MockTransaction, transitionMockTransaction, TransactionState } from "../../services/mockSafetra";
+
+const outcomes: { status: TransactionState; label: string }[] = [
+  { status: "RELEASED", label: "Release to seller" },
+  { status: "REFUNDED", label: "Full refund" },
+  { status: "PARTIALLY_SETTLED", label: "Partial settlement" },
+  { status: "CANCELLED", label: "Cancel transaction" },
+];
 
 export default function AdminDisputePage() {
-  const [isProcessing, setIsProcessing] = useState<string | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
-
-  const handleDecision = (label: string) => {
-    setIsProcessing(label);
-    setToast(null);
-
-    window.setTimeout(() => {
-      setIsProcessing(null);
-      setToast(`${label} has been applied to the dispute.`);
-    }, 900);
+  const { id = "" } = useParams();
+  const [transaction, setTransaction] = useState<MockTransaction | undefined>(() => getMockTransaction(id) ?? getMockTransaction("ST-66831"));
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const role = getDemoSession()?.role;
+  const dispute = getMockDisputes().find((item) => item.transactionId === transaction?.id);
+  const act = async (status: TransactionState, label: string) => {
+    if (!transaction || reason.trim().length < 10) { setMessage("Enter an audit reason of at least 10 characters before taking action."); return; }
+    if (!window.confirm(`Confirm demo decision: ${label}? This local change does not issue a refund or payout.`)) return;
+    setBusy(true);
+    try {
+      const updated = await transitionMockTransaction(transaction.id, status);
+      setTransaction(updated);
+      setMessage(`${label} recorded as a local demo state for ${dispute?.id ?? transaction.id}. No money moved.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not apply this demo state transition.");
+    } finally {
+      setBusy(false);
+    }
   };
-
-  return (
-    <DashboardLayout>
-      <div className="space-y-8">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-            Dispute resolution
-          </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-textPrimary">
-            Transaction #SD-81290
-          </h1>
-        </div>
-
-        <div className="grid gap-6 xl:grid-cols-[0.75fr_1.15fr_0.8fr]">
-          <Card className="p-5">
-            <div className="mb-4 text-lg font-bold text-textPrimary">
-              Transaction details
-            </div>
-            <div className="space-y-3 text-sm text-textSecondary">
-              <div className="flex items-center justify-between gap-3">
-                <span>Product</span>
-                <span className="font-medium text-right text-textPrimary">
-                  Sony A7 IV Camera
-                </span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span>Buyer</span>
-                <span className="font-medium text-right text-textPrimary">
-                  Akosua Mensima
-                </span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span>Seller</span>
-                <span className="font-medium text-right text-textPrimary">
-                  Nana Kwapong
-                </span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span>Amount</span>
-                <span className="font-medium text-right text-textPrimary">
-                  GH₵ 18,000
-                </span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span>Risk</span>
-                <span className="font-medium text-danger">Medium</span>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-5">
-            <div className="mb-4 flex items-center gap-2 text-lg font-bold text-textPrimary">
-              <MessageSquareText className="h-5 w-5 text-primary" />
-              Conversation & evidence
-            </div>
-            <div className="space-y-4">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <div className="font-semibold text-textPrimary">Buyer</div>
-                <div className="mt-2 text-sm leading-6 text-textSecondary">
-                  The item arrived damaged and differs from the described
-                  condition. I have attached photos and the delivery record.
-                </div>
-              </div>
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <div className="font-semibold text-textPrimary">Seller</div>
-                <div className="mt-2 text-sm leading-6 text-textSecondary">
-                  The package was sealed when shipped, and the item was in good
-                  condition. I have upload proof from the courier and packaging
-                  photos.
-                </div>
-              </div>
-            </div>
-            <div className="mt-5 rounded-2xl border border-dashed border-border bg-softBlue p-4 text-sm text-textSecondary">
-              <div className="flex items-center gap-2 text-textPrimary">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                Evidence uploaded: 3 photos • 1 video • 2 invoices
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-5">
-            <div className="mb-4 flex items-center gap-2 text-lg font-bold text-textPrimary">
-              <Scale className="h-5 w-5 text-primary" /> Resolution panel
-            </div>
-            <div className="space-y-3">
-              <Button
-                className="w-full"
-                onClick={() => handleDecision("Release to Seller")}
-                disabled={isProcessing === "Release to Seller"}
-              >
-                {isProcessing === "Release to Seller" ? (
-                  <span className="inline-flex items-center gap-2">
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  "Release to Seller"
-                )}
-              </Button>
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => handleDecision("Refund Buyer")}
-                disabled={isProcessing === "Refund Buyer"}
-              >
-                {isProcessing === "Refund Buyer" ? (
-                  <span className="inline-flex items-center gap-2">
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  "Refund Buyer"
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full"
-                onClick={() => handleDecision("Partial Settlement")}
-                disabled={isProcessing === "Partial Settlement"}
-              >
-                {isProcessing === "Partial Settlement" ? (
-                  <span className="inline-flex items-center gap-2">
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  "Partial Settlement"
-                )}
-              </Button>
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => handleDecision("Request More Evidence")}
-                disabled={isProcessing === "Request More Evidence"}
-              >
-                {isProcessing === "Request More Evidence" ? (
-                  <span className="inline-flex items-center gap-2">
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  "Request More Evidence"
-                )}
-              </Button>
-              <Button
-                variant="danger"
-                className="w-full"
-                onClick={() => handleDecision("Escalate")}
-                disabled={isProcessing === "Escalate"}
-              >
-                {isProcessing === "Escalate" ? (
-                  <span className="inline-flex items-center gap-2">
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                    Escalating...
-                  </span>
-                ) : (
-                  "Escalate"
-                )}
-              </Button>
-            </div>
-          </Card>
-        </div>
-      </div>
-      <Toast
-        show={Boolean(toast)}
-        message={toast ?? ""}
-        onClose={() => setToast(null)}
-        tone="info"
-      />
-    </DashboardLayout>
-  );
+  return <DashboardLayout><div className="space-y-6">
+    <header><p className="text-sm font-semibold uppercase tracking-wider text-primary">Dispute operations · demo</p><h1 className="mt-2 text-3xl font-bold">Case {dispute?.id ?? id}</h1><p className="mt-2 text-sm text-textSecondary">Restricted operations view for DISPUTE_AGENT and SUPER_ADMIN demo accounts. Backend authorization and audit logs are authoritative.</p></header>
+    {!transaction ? <Card className="p-6"><h2 className="font-semibold">No sample transaction found</h2><p className="mt-2 text-sm text-textSecondary">Choose a disputed transaction from the operations list.</p></Card> : <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+      <Card className="p-5"><h2 className="text-lg font-semibold">Transaction context</h2><dl className="mt-4 space-y-3 text-sm"><div className="flex justify-between gap-4"><dt>Transaction</dt><dd className="font-medium">{transaction.id}</dd></div><div className="flex justify-between gap-4"><dt>Product</dt><dd className="font-medium text-right">{transaction.productName}</dd></div><div className="flex justify-between gap-4"><dt>Buyer</dt><dd>{transaction.buyerName}</dd></div><div className="flex justify-between gap-4"><dt>Seller</dt><dd>{transaction.sellerName}</dd></div><div className="flex justify-between gap-4"><dt>Transaction state</dt><dd className="font-semibold">{transaction.status}</dd></div><div className="flex justify-between gap-4"><dt>Escrow workflow</dt><dd>{transaction.escrowStatus}</dd></div><div className="flex justify-between gap-4"><dt>Dispute state</dt><dd>{dispute?.status ?? "No local case record"}</dd></div></dl><p className="mt-5 rounded-lg bg-warning/10 p-3 text-xs text-textSecondary">Evidence filenames shown in the demo are not uploaded documents. Review authorized production evidence in the backend before a real decision.</p></Card>
+      <Card className="p-5"><div className="flex items-center gap-2"><Scale className="h-5 w-5 text-primary" /><h2 className="text-lg font-semibold">Resolution panel</h2></div><div className="mt-4 space-y-4"><label className="block text-sm font-medium" htmlFor="audit-reason">Audit context / reason<textarea id="audit-reason" required minLength={10} maxLength={2000} value={reason} onChange={(event) => setReason(event.target.value)} className="mt-1 min-h-24 w-full rounded-xl border border-border bg-white p-3" placeholder="Record why this case outcome is appropriate." /></label><div className="grid gap-3 sm:grid-cols-2">{outcomes.map((outcome) => <Button key={outcome.status} type="button" variant={outcome.status === "REFUNDED" ? "secondary" : "primary"} disabled={busy || !["DISPUTED", "UNDER_REVIEW"].includes(transaction.status) || (role !== "DISPUTE_AGENT" && role !== "SUPER_ADMIN")} onClick={() => act(outcome.status, outcome.label)}>{outcome.label}</Button>)}</div><Button type="button" variant="secondary" className="w-full" disabled={busy || transaction.status !== "DISPUTED" || (role !== "DISPUTE_AGENT" && role !== "SUPER_ADMIN")} onClick={() => act("UNDER_REVIEW", "Move to under review")}>Move to under review</Button></div>{message && <p role="status" className="mt-4 rounded-xl bg-softGreen p-3 text-sm text-textSecondary">{message}</p>}<div className="mt-5 flex gap-2 rounded-xl bg-slate-50 p-3 text-xs text-textSecondary"><CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />Demo actions follow the backend state machine and require a reason; real authorization, decision policy, and audit persistence must be enforced server-side.</div></Card>
+    </div>}
+  </div></DashboardLayout>;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import logoImage from "./images/logo.png";
 import HomePage from "./pages/public/HomePage";
@@ -25,8 +25,13 @@ import SettingsPage from "./pages/dashboard/SettingsPage";
 import TransactionDetailsPage from "./pages/dashboard/TransactionDetailsPage";
 import ShareableTransactionPage from "./pages/public/ShareableTransactionPage";
 import PaymentPage from "./pages/payments/PaymentPage";
-import AdminPage from "./pages/admin/AdminPage";
-import AdminDisputePage from "./pages/admin/AdminDisputePage";
+import PolicyPage from "./pages/public/PolicyPage";
+import AdminRoute from "./components/layout/AdminRoute";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import NotFoundPage from "./pages/public/NotFoundPage";
+
+const AdminPage = lazy(() => import("./pages/admin/AdminPage"));
+const AdminDisputePage = lazy(() => import("./pages/admin/AdminDisputePage"));
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -63,9 +68,15 @@ function App() {
       <Route path="/security" element={<SecurityPage />} />
       <Route path="/faq" element={<FaqPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/terms" element={<PolicyPage />} />
+      <Route path="/privacy" element={<PolicyPage />} />
+      <Route path="/dispute-policy" element={<PolicyPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/verify-email" element={<OtpPage />} />
+      <Route path="/session-expired" element={<LoginPage />} />
       <Route path="/otp" element={<OtpPage />} />
       <Route path="/t/:transactionId" element={<ShareableTransactionPage />} />
       <Route path="/pay/:transactionId" element={<PaymentPage />} />
@@ -87,8 +98,9 @@ function App() {
         element={<TransactionDetailsPage />}
       />
 
-      <Route path="/admin" element={<AdminPage />} />
-      <Route path="/admin/disputes/:id" element={<AdminDisputePage />} />
+      <Route path="/admin" element={<AdminRoute><Suspense fallback={<div className="p-8 text-center">Loading operations workspace…</div>}><AdminPage /></Suspense></AdminRoute>} />
+      <Route path="/admin/disputes/:id" element={<AdminRoute roles={["DISPUTE_AGENT", "SUPER_ADMIN"]}><Suspense fallback={<div className="p-8 text-center">Loading dispute workspace…</div>}><AdminDisputePage /></Suspense></AdminRoute>} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

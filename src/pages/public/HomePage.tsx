@@ -31,9 +31,9 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-8 text-textSecondary">
-              SafeTra helps buyers and sellers complete high-value deals with
-              confidence by holding funds safely until the transaction is fully
-              verified and delivered.
+              SafeTra helps buyers and sellers agree on clear terms, follow
+              payment and delivery milestones, and know what to do if a trade
+              goes wrong. Explore the workflow in this local demo.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -51,7 +51,7 @@ export default function HomePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-3 text-sm text-textSecondary">
               <span className="font-semibold text-textPrimary">
-                Trusted by:
+              Designed for:
               </span>
               {trustIndicators.slice(0, 4).map((item) => (
                 <span
@@ -91,7 +91,7 @@ export default function HomePage() {
                 <div className="rounded-2xl border border-white/10 bg-white/8 p-4 backdrop-blur-sm">
                   <div className="mb-3 flex items-center justify-between text-sm text-blue-100">
                     <span>Buyer payment</span>
-                    <span className="font-semibold text-white">Secured</span>
+                    <span className="font-semibold text-white">Demo</span>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2">
@@ -103,7 +103,7 @@ export default function HomePage() {
                     <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2">
                       <span className="text-blue-100">Status</span>
                       <span className="font-semibold text-blue-200">
-                        Funds held securely
+                        Payment pending
                       </span>
                     </div>
                   </div>
@@ -128,7 +128,7 @@ export default function HomePage() {
             {
               title: "Protected payments",
               detail:
-                "Funds stay secure until both sides finish the deal and confirm completion.",
+                "The intended workflow separates payment verification, escrow status, delivery, and settlement.",
               icon: Lock,
               image:
                 "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -136,7 +136,7 @@ export default function HomePage() {
             {
               title: "Neutral dispute support",
               detail:
-                "SafeTra steps in when delivery, quality, or trust breaks down.",
+                "A structured dispute workflow lets authorized teams review a reported issue.",
               icon: ShieldCheck,
               image:
                 "https://plus.unsplash.com/premium_photo-1707155465527-c5a2935b21cc?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -144,7 +144,7 @@ export default function HomePage() {
             {
               title: "Simple flow",
               detail:
-                "From deal creation to release, the process stays clear and easy to track.",
+                "Follow the documented transaction states from invitation through delivery and settlement.",
               icon: CheckCircle,
               image:
                 "https://images.unsplash.com/photo-1644043350898-2f4ff1e17912?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -185,21 +185,21 @@ export default function HomePage() {
               Built for trust
             </p>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
-              Faster settlements, clearer accountability, safer deals.
+              Clear milestones. Better accountability. More confident trades.
             </h2>
             <div className="mt-8 space-y-4">
               {[
                 {
                   icon: Lock,
-                  text: "Escrow protection for every step of the deal",
+                  text: "Separate payment, escrow, dispute, and settlement status",
                 },
                 {
                   icon: BadgeCheck,
-                  text: "Verified profiles and transparent milestones",
+                  text: "Clear transaction terms and lifecycle milestones",
                 },
                 {
                   icon: Sparkles,
-                  text: "Real-time updates that keep both parties aligned",
+                  text: "A visible path to support when plans change",
                 },
               ].map(({ icon: Icon, text }) => (
                 <div

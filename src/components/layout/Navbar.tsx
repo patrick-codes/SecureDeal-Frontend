@@ -36,9 +36,9 @@ export default function Navbar() {
 
           <div className="hidden items-center gap-3 md:flex">
             <div className="glass-panel flex items-center gap-2 rounded-full px-3 py-2">
-              <span className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.15)]" />
+              <span className="h-2 w-2 rounded-full bg-success" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-textSecondary">
-                Live escrow
+                Demo prototype
               </span>
             </div>
           </div>

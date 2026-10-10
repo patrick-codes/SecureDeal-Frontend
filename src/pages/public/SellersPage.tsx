@@ -8,13 +8,14 @@ import {
 import PublicLayout from "../../components/layout/PublicLayout";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
+import { Link } from "react-router-dom";
 
 const benefits = [
-  "Get confirmed payment before shipping",
-  "Build seller reputation",
-  "Secure transaction records",
-  "Fewer payment disputes",
-  "Easier customer trust",
+  "Follow payment verification before dispatch",
+  "Keep clear records of agreed transaction terms",
+  "Track delivery and inspection milestones",
+  "Use the structured dispute workflow if a deal goes wrong",
+  "Share a transaction invitation with your buyer",
 ];
 
 export default function SellersPage() {
@@ -56,7 +57,7 @@ export default function SellersPage() {
                     Seller dashboard preview
                   </div>
                   <div className="mt-2 text-2xl font-bold text-textPrimary">
-                    GH₵ 68,450
+                    Demo account
                   </div>
                 </div>
                 <div className="rounded-xl bg-primary/10 p-2 text-primary">
@@ -66,9 +67,9 @@ export default function SellersPage() {
 
               <div className="space-y-3">
                 {[
-                  { label: "Protected payments", value: "24", icon: Wallet },
-                  { label: "Verified buyers", value: "186", icon: Users },
-                  { label: "Trust score", value: "98%", icon: ShieldCheck },
+                  { label: "Payment status", value: "Separate from trade", icon: Wallet },
+                  { label: "Buyer identity", value: "Backend-verified", icon: Users },
+                  { label: "Settlement", value: "Tracked separately", icon: ShieldCheck },
                 ].map(({ label, value, icon: Icon }) => (
                   <div
                     key={label}
@@ -90,7 +91,7 @@ export default function SellersPage() {
               </div>
 
               <Button asChild className="mt-6 w-full">
-                <a href="/dashboard/create-transaction">Sell with protection</a>
+                <Link to="/login">Open seller demo</Link>
               </Button>
             </div>
           </Card>

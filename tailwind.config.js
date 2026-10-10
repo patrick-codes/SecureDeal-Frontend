@@ -4,15 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#0A1F4D",
-        darkBlue: "#08152F",
-        lightBlue: "#EAF1FF",
-        softBlue: "#F4F8FF",
+        primary: "#07583F",
+        darkBlue: "#064530",
+        lightBlue: "#DDF3E9",
+        softBlue: "#F1F8F4",
+        softGreen: "#E8F5EE",
+        lightGreen: "#CDEBDD",
         bg: "#F7F9FC",
         textPrimary: "#0B1220",
         textSecondary: "#4B5563",
         border: "#DDE7F5",
-        success: "#0F5BFF",
+        success: "#16845B",
         warning: "#F59E0B",
         danger: "#DC2626",
       },

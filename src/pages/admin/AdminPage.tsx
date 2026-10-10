@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import Card from "../../components/ui/Card";
-import { adminMetrics } from "../../mock/data";
+import { getDemoSession, getMockTransactions, rolePermissions, DemoRole, formatGhs } from "../../services/mockSafetra";
 
 const volumeData = [
   { name: "Jan", volume: 1200, revenue: 400 },
@@ -21,17 +21,38 @@ const volumeData = [
 ];
 
 export default function AdminPage() {
+  const session = getDemoSession();
+  const role = session?.role ?? "USER";
+  const permissions = rolePermissions[role as DemoRole] ?? [];
+  const can = (permission: string) => permissions.includes("*") || permissions.includes(permission);
+  const transactions = getMockTransactions();
+  const metrics = [
+    ...(can("transaction.view") ? [{ label: "Demo transactions", value: String(transactions.length) }] : []),
+    ...(can("payment.view") ? [{ label: "Sample payments verified", value: String(transactions.filter((transaction) => transaction.paymentStatus === "SUCCESS").length) }] : []),
+    ...(can("dispute.view") ? [{ label: "Disputed transactions", value: String(transactions.filter((transaction) => ["DISPUTED", "UNDER_REVIEW"].includes(transaction.status)).length) }] : []),
+    ...(can("settlement.view") ? [{ label: "Pending settlement examples", value: String(transactions.filter((transaction) => transaction.status === "RELEASE_PENDING").length) }] : []),
+  ];
+  const workspaces = [
+    { label: "User review", description: "View or suspend users where permitted.", permission: "user.view" },
+    { label: "Transaction monitoring", description: "Inspect transaction lifecycle examples.", permission: "transaction.view" },
+    { label: "Payment and webhook visibility", description: "Review sample payment states; no provider events are received.", permission: "payment.view" },
+    { label: "Dispute queue", description: "Review dispute cases and authorized outcomes.", permission: "dispute.view" },
+    { label: "Settlement monitoring", description: "Review pending, processing, failed and reversed sample payouts.", permission: "settlement.view" },
+    { label: "Fraud and risk review", description: "Use backend-authorized risk signals; no real risk assessment occurs here.", permission: "user.view" },
+    { label: "Audit context", description: "Demonstration audit reasons only; no server audit log is written.", permission: "dispute.review" },
+  ].filter((workspace) => can(workspace.permission));
   return (
     <DashboardLayout>
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-textPrimary">
-            Admin overview
+            Operations overview
           </h1>
+          <p className="mt-2 text-sm text-textSecondary">{role} · role-scoped local demonstration. Backend permissions remain authoritative.</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          {adminMetrics.map((metric) => (
+          {metrics.map((metric) => (
             <Card key={metric.label} className="p-5">
               <div className="text-sm text-textSecondary">{metric.label}</div>
               <div className="mt-3 text-2xl font-bold text-textPrimary">
@@ -41,10 +62,12 @@ export default function AdminPage() {
           ))}
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-2">
+        <Card className="p-5"><h2 className="text-lg font-semibold">Role-available workspaces</h2><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{workspaces.map((workspace) => <div key={workspace.label} className="rounded-xl border border-border p-4"><h3 className="font-semibold">{workspace.label}</h3><p className="mt-2 text-sm text-textSecondary">{workspace.description}</p>{workspace.permission === "dispute.view" && <a href="/admin/disputes/ST-66831" className="mt-3 inline-block text-sm font-semibold text-primary">Open sample dispute</a>}</div>)}</div></Card>
+
+        {(role === "FINANCE_ADMIN" || role === "SUPER_ADMIN") && <div className="grid gap-6 xl:grid-cols-2">
           <Card className="p-5">
             <div className="mb-5 text-xl font-bold text-textPrimary">
-              Transaction volume
+              Illustrative transaction volume · mock
             </div>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
@@ -73,7 +96,7 @@ export default function AdminPage() {
 
           <Card className="p-5">
             <div className="mb-5 text-xl font-bold text-textPrimary">
-              Revenue
+              Illustrative revenue · mock
             </div>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
@@ -105,11 +128,11 @@ export default function AdminPage() {
               </ResponsiveContainer>
             </div>
           </Card>
-        </div>
+        </div>}
 
-        <Card className="overflow-hidden">
+        {can("transaction.view") && <Card className="overflow-hidden">
           <div className="border-b border-border bg-slate-50 px-5 py-4 text-lg font-bold text-textPrimary">
-            Recent transactions
+            Recent demo transactions · GHS estimates
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
@@ -125,53 +148,21 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  [
-                    "SD-83921",
-                    "Kofi Mensah",
-                    "Michael Owusu",
-                    "GH₵ 12,500",
-                    "Active",
-                    "Low",
-                    "2026-08-20",
-                  ],
-                  [
-                    "SD-82344",
-                    "Ama Boateng",
-                    "Kwame Asante",
-                    "GH₵ 9,400",
-                    "Completed",
-                    "Low",
-                    "2026-08-18",
-                  ],
-                  [
-                    "SD-81290",
-                    "Akosua Mensima",
-                    "Abena Koomson",
-                    "GH₵ 18,000",
-                    "Disputed",
-                    "Medium",
-                    "2026-08-16",
-                  ],
-                ].map(([id, buyer, seller, amount, status, risk, created]) => (
-                  <tr key={id} className="border-t border-border">
-                    <td className="px-5 py-4 font-medium text-textPrimary">
-                      {id}
-                    </td>
-                    <td className="px-5 py-4 text-textSecondary">{buyer}</td>
-                    <td className="px-5 py-4 text-textSecondary">{seller}</td>
-                    <td className="px-5 py-4 font-semibold text-textPrimary">
-                      {amount}
-                    </td>
-                    <td className="px-5 py-4 text-textPrimary">{status}</td>
-                    <td className="px-5 py-4 text-textSecondary">{risk}</td>
-                    <td className="px-5 py-4 text-textSecondary">{created}</td>
+                {transactions.map((transaction) => (
+                  <tr key={transaction.id} className="border-t border-border">
+                    <td className="px-5 py-4 font-medium text-textPrimary">{transaction.id}</td>
+                    <td className="px-5 py-4 text-textSecondary">{transaction.buyerName}</td>
+                    <td className="px-5 py-4 text-textSecondary">{transaction.sellerName}</td>
+                    <td className="px-5 py-4 font-semibold text-textPrimary">{formatGhs(transaction.amount)}</td>
+                    <td className="px-5 py-4 text-textPrimary">{transaction.status}</td>
+                    <td className="px-5 py-4 text-textSecondary">Not assessed</td>
+                    <td className="px-5 py-4 text-textSecondary">{new Date(transaction.createdAt).toLocaleDateString("en-GH")}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </Card>
+        </Card>}
       </div>
     </DashboardLayout>
   );

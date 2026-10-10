@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import PublicLayout from "../../components/layout/PublicLayout";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
+import { useState } from "react";
 
 export default function ForgotPasswordPage() {
+  const [submitted, setSubmitted] = useState(false);
   return (
     <PublicLayout>
       <section className="mx-auto max-w-xl px-4 py-20 sm:px-6 lg:px-8">
@@ -23,14 +25,20 @@ export default function ForgotPasswordPage() {
               Reset your password
             </h1>
           </div>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); setSubmitted(true); }}>
+            <label htmlFor="reset-contact" className="block text-sm font-medium">Account email</label>
             <input
+              id="reset-contact"
+              type="email"
+              required
               className="w-full rounded-xl border border-border bg-slate-50 px-4 py-3 outline-none focus:border-primary"
-              placeholder="Phone number or email"
+              placeholder="name@example.com"
             />
-            <Button fullWidth className="h-12">
-              Send reset link
+            <Button type="submit" fullWidth className="h-12">
+              Preview password reset
             </Button>
+            {submitted && <p role="status" className="rounded-xl bg-softGreen p-3 text-sm text-textSecondary">Demo only: no reset email was sent. In production, the backend issues and verifies a reset token.</p>}
+            <p className="text-xs text-textSecondary">For a reset-token screen preview, continue to <Link to="/reset-password" className="font-semibold text-primary">set a new password</Link>.</p>
           </form>
         </Card>
       </section>

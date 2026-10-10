@@ -8,22 +8,22 @@ import Toast from "../../components/ui/Toast";
 const settings = [
   {
     title: "Account security",
-    detail: "Update password and manage your login methods.",
+    detail: "Password changes and session management require the real authentication service.",
     icon: Lock,
   },
   {
     title: "Notifications",
-    detail: "Control how and when you receive updates.",
+    detail: "Select mock notification preferences below; no messages are sent.",
     icon: Bell,
   },
   {
     title: "Privacy controls",
-    detail: "Choose the visibility of your profile and transaction data.",
+    detail: "Privacy and data access controls must be enforced by the backend.",
     icon: ShieldCheck,
   },
   {
     title: "Profile preferences",
-    detail: "Update personal details and contact information.",
+    detail: "Profile edits and email/phone verification are not connected in this prototype.",
     icon: UserCog,
   },
 ];
@@ -31,14 +31,18 @@ const settings = [
 export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [transactionAlerts, setTransactionAlerts] = useState(true);
+  const [securityAlerts, setSecurityAlerts] = useState(true);
 
-  const handleSave = () => {
+  const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsSaving(true);
     setToast(null);
 
     window.setTimeout(() => {
       setIsSaving(false);
-      setToast("Settings saved successfully.");
+      localStorage.setItem("safetra.demo.preferences.v1", JSON.stringify({ transactionAlerts, securityAlerts }));
+      setToast("Demo preferences saved in this browser only. No notification settings were changed on a server.");
     }, 900);
   };
 
@@ -48,7 +52,7 @@ export default function SettingsPage() {
         <div>
           <h1 className="text-3xl font-bold text-textPrimary">Settings</h1>
           <p className="mt-2 text-textSecondary">
-            Manage your SafeTra preferences and security controls.
+            Manage local demonstration preferences. These controls do not change production account settings.
           </p>
         </div>
 
@@ -71,27 +75,31 @@ export default function SettingsPage() {
           <div className="space-y-3 text-sm text-textSecondary">
             <div className="flex items-center justify-between rounded-xl border border-border bg-slate-50 p-3">
               <span>Two-factor authentication</span>
-              <span className="font-semibold text-success">Enabled</span>
+              <span className="font-semibold text-textSecondary">Not configured</span>
             </div>
             <div className="flex items-center justify-between rounded-xl border border-border bg-slate-50 p-3">
               <span>Transaction alerts</span>
-              <span className="font-semibold text-primary">On</span>
+              <span className="font-semibold text-textSecondary">Demo preference</span>
             </div>
             <div className="flex items-center justify-between rounded-xl border border-border bg-slate-50 p-3">
               <span>Verified contact details</span>
-              <span className="font-semibold text-success">Complete</span>
+              <span className="font-semibold text-textSecondary">Unverified in demo</span>
             </div>
           </div>
-          <Button className="mt-6" onClick={handleSave} disabled={isSaving}>
+          <form className="mt-5 space-y-3" onSubmit={handleSave}>
+            <label className="flex items-center gap-3 rounded-xl border border-border p-3 text-sm"><input type="checkbox" checked={transactionAlerts} onChange={(event) => setTransactionAlerts(event.target.checked)} /> Transaction status alert preference (local only)</label>
+            <label className="flex items-center gap-3 rounded-xl border border-border p-3 text-sm"><input type="checkbox" checked={securityAlerts} onChange={(event) => setSecurityAlerts(event.target.checked)} /> Account security alert preference (local only)</label>
+          <Button type="submit" className="mt-2" disabled={isSaving}>
             {isSaving ? (
               <span className="inline-flex items-center gap-2">
                 <LoaderCircle className="h-4 w-4 animate-spin" />
-                Saving...
+                Saving demo preferences...
               </span>
             ) : (
-              "Save changes"
+              "Save local preferences"
             )}
           </Button>
+          </form>
         </Card>
       </div>
       <Toast

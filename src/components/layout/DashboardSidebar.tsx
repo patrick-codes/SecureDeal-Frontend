@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logoImage from "../../images/logo.png";
 import {
   LayoutGrid,
@@ -11,7 +11,9 @@ import {
   User,
   Settings,
   HelpCircle,
+  ShieldCheck,
 } from "lucide-react";
+import { getDemoSession } from "../../services/mockSafetra";
 
 const navItems = [
   { label: "Overview", to: "/dashboard", icon: LayoutGrid },
@@ -30,6 +32,8 @@ const navItems = [
 ];
 
 export default function DashboardSidebar() {
+  const session = getDemoSession();
+  const isAdmin = session && session.role !== "USER";
   return (
     <aside className="hidden w-72 shrink-0 border-r border-white/10 bg-[#08152F] text-white lg:flex lg:flex-col">
       <div className="flex items-center gap-3 border-b border-white/10 p-5">
@@ -40,7 +44,7 @@ export default function DashboardSidebar() {
         />
         <div>
           <div className="text-lg font-bold text-white">SafeTra</div>
-          <div className="text-xs text-slate-300">Protected account</div>
+          <div className="text-xs text-slate-300">Demo account · no live funds</div>
         </div>
       </div>
 
@@ -57,13 +61,14 @@ export default function DashboardSidebar() {
             {label}
           </NavLink>
         ))}
+        {isAdmin && <NavLink to="/admin" className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition ${isActive ? "bg-white text-primary shadow-sm" : "text-slate-200 hover:bg-white/5 hover:text-white"}`}><ShieldCheck className="h-4 w-4" />Operations console</NavLink>}
       </nav>
 
       <div className="border-t border-white/10 p-4">
-        <div className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-slate-100">
+        <Link to="/contact" className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-slate-100 hover:bg-white/10">
           <HelpCircle className="h-4 w-4" />
           Help & Support
-        </div>
+        </Link>
       </div>
     </aside>
   );

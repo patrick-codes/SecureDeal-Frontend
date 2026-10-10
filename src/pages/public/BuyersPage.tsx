@@ -2,13 +2,14 @@ import { CheckCircle2, Lock, ShieldCheck, Wallet, Search } from "lucide-react";
 import PublicLayout from "../../components/layout/PublicLayout";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
+import { Link } from "react-router-dom";
 
 const benefits = [
-  "Your payment is protected",
-  "Seller doesn’t receive money immediately",
+  "Review agreed terms before proceeding",
+  "Payment and delivery states are tracked separately",
   "Clear transaction terms",
   "Inspection period",
-  "Dispute protection",
+  "A structured dispute workflow",
   "Transaction history",
 ];
 
@@ -47,7 +48,7 @@ export default function BuyersPage() {
                   Buyer overview
                 </div>
                 <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-primary">
-                  Protected
+                  Demo
                 </span>
               </div>
               <div className="rounded-2xl bg-white p-4">
@@ -69,7 +70,7 @@ export default function BuyersPage() {
 
             <div className="space-y-4 p-5">
               {[
-                { label: "Payment status", value: "Secured", icon: Lock },
+                { label: "Payment status", value: "Sample · pending", icon: Lock },
                 { label: "Seller", value: "Kwame Mensah", icon: Search },
                 {
                   label: "Delivery",
@@ -95,9 +96,9 @@ export default function BuyersPage() {
             </div>
             <div className="border-t border-border p-5">
               <Button asChild className="w-full">
-                <a href="/dashboard/transactions/SD-83921">
+                <Link to="/login">
                   Review transaction
-                </a>
+                </Link>
               </Button>
             </div>
           </Card>

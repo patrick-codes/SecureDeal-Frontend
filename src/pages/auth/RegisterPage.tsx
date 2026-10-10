@@ -1,123 +1,50 @@
-import {
-  Mail,
-  LockKeyhole,
-  User,
-  Smartphone,
-  LoaderCircle,
-} from "lucide-react";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { FormEvent, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import PublicLayout from "../../components/layout/PublicLayout";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
+import { setPendingDemoProfile } from "../../services/mockSafetra";
+
+const inputClass = "mt-1 w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10";
+const validPassword = (password: string) => password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /[!@#$%^&*]/.test(password);
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [searchParams] = useSearchParams();
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsSubmitting(true);
-
+    setError("");
+    const data = new FormData(event.currentTarget);
+    const name = String(data.get("name")).trim();
+    const email = String(data.get("email")).trim().toLowerCase();
+    const phone = String(data.get("phone")).replace(/[\s-]/g, "");
+    const userType = String(data.get("userType")) === "SELLER" ? "SELLER" : "BUYER";
+    const password = String(data.get("password"));
+    const confirmation = String(data.get("confirmation"));
+    if (name.length < 2) { setError("Enter your full name (at least 2 characters)."); return; }
+    if (!/^\+?[\d\s-()]+$/.test(phone)) { setError("Enter a valid phone number."); return; }
+    if (!validPassword(password)) { setError("Use 8+ characters with uppercase, lowercase, a digit, and one of !@#$%^&*."); return; }
+    if (password !== confirmation) { setError("Passwords do not match."); return; }
+    setBusy(true);
+    setPendingDemoProfile({ email, name, phone, userType });
     window.setTimeout(() => {
-      setIsSubmitting(false);
-      navigate("/otp");
-    }, 900);
+      setBusy(false);
+      const returnTo = searchParams.get("returnTo");
+      navigate(returnTo?.startsWith("/") && !returnTo.startsWith("//") ? `/otp?returnTo=${encodeURIComponent(returnTo)}` : "/otp");
+    }, 350);
   };
-
-  return (
-    <PublicLayout>
-      <section className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
-        <div
-          className="relative overflow-hidden rounded-[32px] border border-white/20 bg-cover bg-center shadow-card"
-          style={{
-            backgroundImage:
-              "linear-gradient(90deg, rgba(7,18,38,0.87), rgba(7,18,38,0.62)), url('https://plus.unsplash.com/premium_photo-1661637996976-030cc7b87891?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
-          }}
-        >
-          <div className="grid gap-5 px-5 py-8 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-12 lg:py-12">
-            <div className="text-white">
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Create your SafeTra account
-              </h1>
-              <p className="mt-3 max-w-md text-base text-slate-200">
-                Set up your secure profile and start protecting your next
-                transaction.
-              </p>
-            </div>
-
-            <Card className="p-6 shadow-2xl">
-              <div className="mb-6 text-center text-2xl font-bold text-textPrimary">
-                Sign up
-              </div>
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="rounded-xl border border-border bg-slate-50 px-3 py-2.5 focus-within:border-primary">
-                  <div className="flex items-center gap-2 text-textSecondary">
-                    <User className="h-4 w-4" />
-                    <input
-                      className="w-full border-0 bg-transparent px-1 py-1 text-sm outline-none"
-                      placeholder="Full name"
-                      defaultValue="Kofi Mensah"
-                    />
-                  </div>
-                </div>
-                <div className="rounded-xl border border-border bg-slate-50 px-3 py-2.5 focus-within:border-primary">
-                  <div className="flex items-center gap-2 text-textSecondary">
-                    <Smartphone className="h-4 w-4" />
-                    <input
-                      className="w-full border-0 bg-transparent px-1 py-1 text-sm outline-none"
-                      placeholder="Phone number"
-                      defaultValue="+233 20 123 4567"
-                    />
-                  </div>
-                </div>
-                <div className="rounded-xl border border-border bg-slate-50 px-3 py-2.5 focus-within:border-primary">
-                  <div className="flex items-center gap-2 text-textSecondary">
-                    <Mail className="h-4 w-4" />
-                    <input
-                      className="w-full border-0 bg-transparent px-1 py-1 text-sm outline-none"
-                      placeholder="Email"
-                      defaultValue="kofi@safetra.app"
-                    />
-                  </div>
-                </div>
-                <div className="rounded-xl border border-border bg-slate-50 px-3 py-2.5 focus-within:border-primary">
-                  <div className="flex items-center gap-2 text-textSecondary">
-                    <LockKeyhole className="h-4 w-4" />
-                    <input
-                      type="password"
-                      className="w-full border-0 bg-transparent px-1 py-1 text-sm outline-none"
-                      placeholder="Password"
-                      defaultValue="safetra123"
-                    />
-                  </div>
-                </div>
-                <Button
-                  type="submit"
-                  fullWidth
-                  className="h-12"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <span className="inline-flex items-center gap-2">
-                      <LoaderCircle className="h-4 w-4 animate-spin" />
-                      Creating account...
-                    </span>
-                  ) : (
-                    "Create account"
-                  )}
-                </Button>
-                <div className="text-center text-sm text-textSecondary">
-                  Already have an account?{" "}
-                  <Link to="/login" className="font-semibold text-primary">
-                    Log in
-                  </Link>
-                </div>
-              </form>
-            </Card>
-          </div>
-        </div>
-      </section>
-    </PublicLayout>
-  );
+  return <PublicLayout><section className="mx-auto max-w-3xl px-4 py-10 sm:py-14"><Card className="p-5 sm:p-8"><p className="text-sm font-semibold uppercase tracking-wider text-primary">Create a mock account</p><h1 className="mt-2 text-3xl font-bold">Join SafeTra</h1><p className="mt-2 text-sm text-textSecondary">Backend-aligned fields, local-only experience. No password is stored and no OTP is sent.</p><form onSubmit={submit} className="mt-6 grid gap-4 sm:grid-cols-2">
+    <label className="text-sm font-medium sm:col-span-2">Full name<input name="name" required minLength={2} maxLength={100} className={inputClass} autoComplete="name" /></label>
+    <label className="text-sm font-medium">Email<input name="email" type="email" required className={inputClass} autoComplete="email" /></label>
+    <label className="text-sm font-medium">Phone number<input name="phone" type="tel" required className={inputClass} placeholder="+233 24 123 4567" autoComplete="tel" /></label>
+    <label className="text-sm font-medium">Account use<select name="userType" className={inputClass}><option value="BUYER">I’m buying</option><option value="SELLER">I’m selling</option></select></label>
+    <span className="self-end pb-3 text-xs text-textSecondary">The backend assigns account role and verification status.</span>
+    <label className="text-sm font-medium">Password<input name="password" type="password" required className={inputClass} autoComplete="new-password" /></label>
+    <label className="text-sm font-medium">Confirm password<input name="confirmation" type="password" required className={inputClass} autoComplete="new-password" /></label>
+    {error && <p role="alert" className="rounded-xl bg-danger/10 p-3 text-sm text-danger sm:col-span-2">{error}</p>}
+    <p className="rounded-xl bg-softGreen/50 p-3 text-xs text-textSecondary sm:col-span-2">Demo only: these details stay in this browser for the verification preview. Do not enter real credentials or sensitive information.</p>
+    <Button type="submit" className="sm:col-span-2" disabled={busy}>{busy ? "Preparing demo verification…" : "Continue to verification preview"}</Button>
+  </form><p className="mt-5 text-center text-sm text-textSecondary">Already signed up? <Link to={`/login${searchParams.get("returnTo") ? `?returnTo=${encodeURIComponent(searchParams.get("returnTo") ?? "")}` : ""}`} className="font-semibold text-primary">Log in to demo</Link></p></Card></section></PublicLayout>;
 }

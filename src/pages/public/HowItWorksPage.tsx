@@ -6,6 +6,7 @@ import {
   PackageCheck,
   Truck,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import PublicLayout from "../../components/layout/PublicLayout";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
@@ -20,7 +21,7 @@ const steps = [
   {
     number: "02",
     title: "Buyer pays",
-    text: "Payment is securely held while the transaction is in progress.",
+    text: "The payment provider verifies payment before the workflow records a funded state.",
     icon: CreditCard,
   },
   {
@@ -32,7 +33,7 @@ const steps = [
   {
     number: "04",
     title: "Buyer confirms",
-    text: "Buyer confirms successful delivery and the funds are released.",
+    text: "Buyer confirms delivery; release and seller settlement then follow separate workflow states.",
     icon: PackageCheck,
   },
 ];
@@ -79,15 +80,15 @@ export default function HowItWorksPage() {
                 </h3>
               </div>
               <span className="rounded-full bg-lightGreen px-3 py-1.5 text-xs font-semibold text-primary">
-                Protected
+                Demo flow
               </span>
             </div>
             <div className="space-y-5">
               {[
                 ["Create the deal", "Buyer and seller agree on terms"],
-                ["Buyer pays", "Funds are held securely by SafeTra"],
+                ["Buyer pays", "Provider payment verification; escrow state is tracked separately"],
                 ["Seller delivers", "Item is shipped or provided"],
-                ["Buyer confirms", "Funds are released to seller"],
+                ["Buyer confirms", "Release can enter a pending settlement workflow"],
               ].map(([title, text], index) => (
                 <div key={title} className="flex gap-4">
                   <div className="flex flex-col items-center">
@@ -122,7 +123,7 @@ export default function HowItWorksPage() {
               path from deal to release.
             </p>
             <div className="mt-8 space-y-3">
-              {["Clear milestones", "Neutral mediation", "Protected funds"].map(
+              {["Clear milestones", "Dispute review workflow", "Settlement status visibility"].map(
                 (item) => (
                   <div
                     key={item}
@@ -139,7 +140,7 @@ export default function HowItWorksPage() {
               variant="secondary"
               className="mt-8 h-12 bg-white text-primary hover:bg-slate-100"
             >
-              <a href="/register">Start a secure deal</a>
+              <Link to="/register">Start a secure deal</Link>
             </Button>
           </div>
         </div>

@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import logoImage from "../../images/logo.png";
-import appStoreImage from "../../images/App-Store.jpg";
-import playStoreImage from "../../images/Play-Store.png";
 
 export default function Footer() {
   return (
@@ -39,35 +37,10 @@ export default function Footer() {
               <span>SafeTra</span>
             </div>
             <p className="max-w-xs text-sm leading-6 text-slate-600">
-              Escrow protection for modern transactions, built to keep every
-              deal fair, secure, and transparent.
+              A Ghana-focused trade workflow prototype for clearer terms,
+              payment milestones, and support when a deal goes wrong.
             </p>
 
-            <div className="mt-5 flex flex-row items-center gap-3">
-              <a
-                href="#"
-                className="block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md"
-                aria-label="Download on the App Store"
-              >
-                <img
-                  src={appStoreImage}
-                  alt="App Store"
-                  className="h-11 w-auto object-cover"
-                />
-              </a>
-
-              <a
-                href="#"
-                className="block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md"
-                aria-label="Get it on Google Play"
-              >
-                <img
-                  src={playStoreImage}
-                  alt="Google Play"
-                  className="h-11 w-auto object-cover"
-                />
-              </a>
-            </div>
           </div>
 
           <div>
@@ -90,6 +63,9 @@ export default function Footer() {
                   Security
                 </Link>
               </li>
+              <li><Link to="/terms" className="hover:text-primary">Terms (draft)</Link></li>
+              <li><Link to="/privacy" className="hover:text-primary">Privacy (draft)</Link></li>
+              <li><Link to="/dispute-policy" className="hover:text-primary">Disputes & refunds (draft)</Link></li>
             </ul>
           </div>
 
@@ -126,8 +102,7 @@ export default function Footer() {
                   Contact us
                 </Link>
               </li>
-              <li>hello@safetra.app</li>
-              <li>+233 20 000 0000</li>
+              <li className="text-xs text-slate-500">Support details shown in the contact page.</li>
             </ul>
           </div>
         </div>

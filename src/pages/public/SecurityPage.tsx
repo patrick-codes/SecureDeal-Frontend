@@ -13,19 +13,19 @@ const sections = [
   {
     title: "Payment Security",
     detail:
-      "Payment is protected during the transaction and held in an escrow wallet until completion.",
+      "The backend tracks payment verification separately from transaction, escrow, and settlement states. This frontend prototype does not handle money.",
     icon: Lock,
   },
   {
     title: "Transaction Protection",
     detail:
-      "Buyer and seller protection allows each side to complete the deal with clear trust safeguards.",
+      "An explicit transaction state machine prevents arbitrary status changes in the intended service workflow.",
     icon: ShieldCheck,
   },
   {
     title: "Dispute Resolution",
     detail:
-      "Disputes are reviewed by SafeTra with clear evidence and neutral decision-making.",
+      "Supported dispute reasons, authorized review roles, and resolution options are defined in the backend workflow.",
     icon: CreditCard,
   },
   {
@@ -43,7 +43,7 @@ const sections = [
   {
     title: "Privacy",
     detail:
-      "User information is handled responsibly and only used for the transaction and support process.",
+      "The production privacy notice must explain the data actually collected, used, shared, and retained.",
     icon: Eye,
   },
 ];
@@ -57,7 +57,7 @@ export default function SecurityPage() {
             Security
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-textPrimary">
-            Your trust is our product.
+            Built around clear and reviewable workflows.
           </h1>
         </div>
 
@@ -69,17 +69,16 @@ export default function SecurityPage() {
               </div>
               <h3 className="text-2xl font-bold">Secure by default</h3>
               <p className="mt-3 text-white/80">
-                From payment protection to dispute review, every stage is
-                designed to reduce risk and improve confidence.
+                The backend defines explicit payment, transaction, escrow, dispute, settlement, authorization, and audit modules. The UI is a demonstration only; the backend and payment provider remain authoritative.
               </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               {[
-                ["Protected funds", "GH₵ 8.4M"],
-                ["Escrow transactions", "2,341"],
-                ["Resolved disputes", "94%"],
-                ["Verification rate", "97%"],
+                ["Transaction states", "Explicit workflow"],
+                ["Payment events", "Provider-verified"],
+                ["Dispute outcomes", "Role-authorized"],
+                ["Audit history", "Backend-managed"],
               ].map(([label, value]) => (
                 <div
                   key={label}
